@@ -93,16 +93,16 @@ export default function Navbar() {
       <div className="w-full bg-gray-800 h-1"></div>
       
       <nav className="w-full bg-white border-b border-gray-200">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+        <div className="container mx-auto px-2 sm:px-4 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-1 min-w-0">
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="lg:hidden p-2 text-gray-700 hover:text-gray-900"
+                className="lg:hidden p-1.5 sm:p-2 text-gray-700 hover:text-gray-900"
                 aria-label="Menu"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 sm:w-6 sm:h-6"
                   fill="none"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -120,30 +120,30 @@ export default function Navbar() {
                   alt="Godło Polski"
                   width={48}
                   height={48}
-                  className="w-10 h-10 sm:w-12 sm:h-12"
+                  className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12"
                   priority
                 />
               </div>
 
-              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <span className="text-base sm:text-lg font-bold text-gray-800 whitespace-nowrap">
+              <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 min-w-0">
+                <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
+                  <span className="hidden sm:inline text-xs sm:text-sm md:text-base lg:text-lg font-bold text-gray-800 whitespace-nowrap">
                     Rejestr Rzeczy Znalezionych
                   </span>
-                  <div className="h-6 w-px bg-red-600 hidden sm:block"></div>
-                  <span className="text-xs sm:text-sm text-gray-700 hidden sm:inline whitespace-nowrap">
+                  <div className="h-4 sm:h-5 md:h-6 w-px bg-red-600 hidden sm:block"></div>
+                  <span className="text-[10px] sm:text-xs md:text-sm text-gray-700 hidden md:inline whitespace-nowrap">
                     Serwis do zgłaszania rzeczy znalezionych
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 lg:gap-4 flex-shrink-0">
               {user && (
-                <div className="flex items-center gap-2">
-                  <div className="hidden sm:flex items-center gap-2 px-3 py-2 border border-blue-600 rounded-md">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <div className="hidden md:flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 border border-blue-600 rounded-md">
                     <svg
-                      className="w-4 h-4 text-blue-600"
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600"
                       fill="none"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -153,11 +153,11 @@ export default function Navbar() {
                     >
                       <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
-                    <span className="text-sm font-medium text-blue-600 whitespace-nowrap">
+                    <span className="text-xs sm:text-sm font-medium text-blue-600 whitespace-nowrap">
                       {user.first_name} {user.last_name}
                     </span>
                   </div>
-                  <div className="sm:hidden text-sm font-medium text-blue-600">
+                  <div className="md:hidden text-xs sm:text-sm font-medium text-blue-600 truncate max-w-[80px] sm:max-w-none">
                     {user.first_name} {user.last_name}
                   </div>
                 </div>
@@ -165,9 +165,10 @@ export default function Navbar() {
 
               <button
                 onClick={() => router.push("/items")}
-                className="px-3 py-2 text-sm font-medium text-[#0052a5] hover:text-[#003d7a] border border-[#0052a5] rounded-md hover:bg-blue-50 transition-colors whitespace-nowrap"
+                className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-[#0052a5] hover:text-[#003d7a] border border-[#0052a5] rounded-md hover:bg-blue-50 transition-colors whitespace-nowrap"
               >
-                Zgubione przedmioty
+                <span className="hidden sm:inline">Zgubione przedmioty</span>
+                <span className="sm:hidden">Przedmioty</span>
               </button>
 
               <div className="flex items-center">
@@ -176,7 +177,7 @@ export default function Navbar() {
                   alt="Flaga Unii Europejskiej"
                   width={80}
                   height={70}
-                  className="w-10 h-7 sm:w-12 sm:h-9"
+                  className="w-8 h-6 sm:w-10 sm:h-7 md:w-12 md:h-9"
                   priority
                 />
               </div>
@@ -184,7 +185,7 @@ export default function Navbar() {
               <button
                 onClick={handleLogout}
                 disabled={loading}
-                className="px-3 py-2 text-sm font-medium text-red-600 hover:text-red-700 border border-red-600 rounded-md hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-red-600 hover:text-red-700 border border-red-600 rounded-md hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
               >
                 {loading ? "..." : "Wyloguj"}
               </button>
@@ -195,10 +196,10 @@ export default function Navbar() {
 
       {menuOpen && (
         <div className="lg:hidden bg-white border-b border-gray-200">
-          <div className="container mx-auto px-4 py-4">
+          <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4">
             <div className="flex flex-col gap-2">
               {user && (
-                <div className="px-3 py-2 text-sm text-gray-700">
+                <div className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-700">
                   {user.first_name} {user.last_name}
                 </div>
               )}

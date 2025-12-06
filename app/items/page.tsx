@@ -102,7 +102,7 @@ export default function ItemsPage() {
     <div className="min-h-screen bg-white py-8 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-black mb-2">Moje znalezione przedmioty</h1>
+          <h1 className="text-3xl font-bold text-black mb-2">Zarejestrowane znalezione przedmioty</h1>
           <button
             onClick={() => router.push("/")}
             className="text-[#0052a5] hover:text-[#003d7a] text-sm font-medium"
