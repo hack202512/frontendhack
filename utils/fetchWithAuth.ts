@@ -57,11 +57,11 @@ export async function fetchWithAuth(
 
   const authHeader = getAuthHeader();
   const isFormData = options.body instanceof FormData;
-  const headers: HeadersInit = isFormData
-    ? { ...options.headers }
+  const headers: Record<string, string> = isFormData
+    ? { ...(options.headers as Record<string, string>) }
     : {
         "Content-Type": "application/json",
-        ...options.headers,
+        ...(options.headers as Record<string, string>),
       };
 
   if (authHeader && !url.includes("/auth/login") && !url.includes("/auth/register")) {
@@ -70,7 +70,7 @@ export async function fetchWithAuth(
 
   let response = await fetch(fullUrl, {
     ...options,
-    headers,
+    headers: headers as HeadersInit,
   });
 
   if (
@@ -87,7 +87,7 @@ export async function fetchWithAuth(
       }
       response = await fetch(fullUrl, {
         ...options,
-        headers,
+        headers: headers as HeadersInit,
       });
     } else {
       clearTokens();
