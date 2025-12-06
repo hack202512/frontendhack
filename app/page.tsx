@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuthCheck } from "@/hooks/useAuthCheck";
 import { useAddressGeocoding } from "@/hooks/useAddressGeocoding";
 import { API_URL } from "@/config/api";
+import { fetchWithAuth } from "@/utils/fetchWithAuth";
 import ItemInfoSection from "@/components/ItemInfoSection";
 import LocationSection from "@/components/LocationSection";
 import FinderInfoSection from "@/components/FinderInfoSection";
@@ -96,7 +97,7 @@ export default function Home() {
         found_by_phonenumber: formData.finderPhone,
       };
 
-      const response = await fetch(`${API_URL}/found-item-forms/`, {
+      const response = await fetchWithAuth("/found-item-forms/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

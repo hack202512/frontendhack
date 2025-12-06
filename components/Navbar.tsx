@@ -27,10 +27,28 @@ export default function Navbar() {
 
     const fetchUser = async () => {
       try {
-        const response = await fetch(`${API_URL}/auth/me`, {
+        let response = await fetch(`${API_URL}/auth/me`, {
           method: "GET",
           credentials: "include",
         });
+        
+        if (response.status === 401) {
+          const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          
+          if (refreshResponse.ok) {
+            response = await fetch(`${API_URL}/auth/me`, {
+              method: "GET",
+              credentials: "include",
+            });
+          }
+        }
+        
         if (response.ok) {
           const userData = await response.json();
           setUser(userData);

@@ -1,5 +1,32 @@
 import { API_URL } from "@/config/api";
 
+let isRefreshing = false;
+let refreshPromise: Promise<Response> | null = null;
+
+async function refreshToken(): Promise<Response> {
+  if (refreshPromise) {
+    return refreshPromise;
+  }
+
+  refreshPromise = fetch(`${API_URL}/auth/refresh`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  try {
+    const response = await refreshPromise;
+    if (!response.ok) {
+      throw new Error("Token refresh failed");
+    }
+    return response;
+  } finally {
+    refreshPromise = null;
+  }
+}
+
 export function useAuthFetch() {
   const authFetch = async (
     url: string,
@@ -15,11 +42,24 @@ export function useAuthFetch() {
           ...options.headers,
         };
 
-    const response = await fetch(fullUrl, {
+    let response = await fetch(fullUrl, {
       ...options,
       credentials: "include",
       headers,
     });
+
+    if (response.status === 401 && !url.includes("/auth/refresh") && !url.includes("/auth/login")) {
+      try {
+        await refreshToken();
+        response = await fetch(fullUrl, {
+          ...options,
+          credentials: "include",
+          headers,
+        });
+      } catch (error) {
+        return response;
+      }
+    }
 
     return response;
   };

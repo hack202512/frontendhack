@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthCheck } from "@/hooks/useAuthCheck";
 import { API_URL } from "@/config/api";
+import { fetchWithAuth } from "@/utils/fetchWithAuth";
 
 interface FoundItem {
   id: string;
@@ -31,9 +32,8 @@ export default function ItemsPage() {
     const fetchItems = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_URL}/found-item-forms/my`, {
+        const response = await fetchWithAuth("/found-item-forms/my", {
           method: "GET",
-          credentials: "include",
         });
 
         if (!response.ok) {
@@ -76,9 +76,8 @@ export default function ItemsPage() {
 
   const handleDownloadCSV = async () => {
     try {
-      const response = await fetch(`${API_URL}/found-item-forms/export?format=csv`, {
+      const response = await fetchWithAuth("/found-item-forms/export?format=csv", {
         method: "GET",
-        credentials: "include",
       });
 
       if (!response.ok) {
