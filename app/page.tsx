@@ -86,15 +86,15 @@ export default function Home() {
     try {
       const payload = {
         item_name: formData.itemName,
-        item_color: formData.itemColor || null,
-        item_brand: formData.itemBrand || null,
+        item_color: formData.itemColor.trim() || null,
+        item_brand: formData.itemBrand.trim() || null,
         found_location: formData.location,
         found_date: formData.foundDate,
-        found_time: formData.foundTime || null,
-        circumstances: formData.circumstances || null,
-        found_by_firstname: formData.finderFirstName,
-        found_by_lastname: formData.finderLastName,
-        found_by_phonenumber: formData.finderPhone,
+        found_time: formData.foundTime.trim() || null,
+        circumstances: formData.circumstances.trim() || null,
+        found_by_firstname: formData.finderFirstName.trim() || null,
+        found_by_lastname: formData.finderLastName.trim() || null,
+        found_by_phonenumber: formData.finderPhone.trim() || null,
       };
 
       const response = await fetchWithAuth("/found-item-forms/", {
