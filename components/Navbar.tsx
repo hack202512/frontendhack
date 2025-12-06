@@ -26,10 +26,13 @@ export default function Navbar() {
     }
 
     const fetchUser = async () => {
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
       try {
         let response = await fetch(`${API_URL}/auth/me`, {
           method: "GET",
           credentials: "include",
+          cache: "no-store",
         });
         
         if (response.status === 401) {
@@ -39,12 +42,15 @@ export default function Navbar() {
             headers: {
               "Content-Type": "application/json",
             },
+            cache: "no-store",
           });
           
           if (refreshResponse.ok) {
+            await new Promise(resolve => setTimeout(resolve, 100));
             response = await fetch(`${API_URL}/auth/me`, {
               method: "GET",
               credentials: "include",
+              cache: "no-store",
             });
           }
         }

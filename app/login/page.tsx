@@ -35,7 +35,9 @@ export default function LoginPage() {
         throw new Error(data.detail || "Login failed");
       }
 
-      router.push("/");
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      window.location.href = "/";
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {

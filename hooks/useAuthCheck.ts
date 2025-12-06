@@ -24,18 +24,23 @@ export function useAuthCheck() {
 
   useEffect(() => {
     const checkAuth = async () => {
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
       try {
         let response = await fetch(`${API_URL}/protected`, {
           method: "GET",
           credentials: "include",
+          cache: "no-store",
         });
 
         if (response.status === 401) {
           const refreshed = await refreshTokenIfNeeded();
           if (refreshed) {
+            await new Promise(resolve => setTimeout(resolve, 100));
             response = await fetch(`${API_URL}/protected`, {
               method: "GET",
               credentials: "include",
+              cache: "no-store",
             });
           }
         }
