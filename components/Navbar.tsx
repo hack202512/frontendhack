@@ -2,6 +2,8 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { API_URL } from "@/config/api";
+import { fetchWithAuth } from "@/utils/fetchWithAuth";
+import { clearTokens } from "@/utils/auth";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
@@ -26,34 +28,10 @@ export default function Navbar() {
     }
 
     const fetchUser = async () => {
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
       try {
-        let response = await fetch(`${API_URL}/auth/me`, {
+        const response = await fetchWithAuth("/auth/me", {
           method: "GET",
-          credentials: "include",
-          cache: "no-store",
         });
-        
-        if (response.status === 401) {
-          const refreshResponse = await fetch(`${API_URL}/auth/refresh`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            cache: "no-store",
-          });
-          
-          if (refreshResponse.ok) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-            response = await fetch(`${API_URL}/auth/me`, {
-              method: "GET",
-              credentials: "include",
-              cache: "no-store",
-            });
-          }
-        }
         
         if (response.ok) {
           const userData = await response.json();
@@ -73,23 +51,17 @@ export default function Navbar() {
   const handleLogout = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/auth/logout`, {
+      await fetchWithAuth("/auth/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
       });
-      
-      if (!response.ok) {
-        throw new Error(`Logout failed: ${response.status}`);
-      }
-      
-      router.push("/login");
     } catch (error) {
       console.error("Logout error:", error);
-      router.push("/login");
     } finally {
+      clearTokens();
+      router.push("/login");
       setLoading(false);
     }
   };

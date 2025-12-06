@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_URL } from "@/config/api";
+import { setTokens } from "@/utils/auth";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -23,7 +24,6 @@ export default function LoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
         body: JSON.stringify({
           email,
           password,
@@ -36,13 +36,13 @@ export default function LoginPage() {
       }
 
       const data = await response.json();
-      if (!data.ok) {
-        throw new Error(data.detail || "Login failed");
+      if (!data.access_token || !data.refresh_token) {
+        throw new Error("Invalid response from server");
       }
 
-      await new Promise(resolve => setTimeout(resolve, 500));
+      setTokens(data.access_token, data.refresh_token);
       
-      window.location.href = "/";
+      router.push("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {

@@ -1,4 +1,5 @@
 import { API_URL } from "@/config/api";
+import { getRefreshToken, setTokens, clearTokens, getAuthHeader } from "@/utils/auth";
 
 let isRefreshing = false;
 let refreshPromise: Promise<Response> | null = null;
@@ -13,11 +14,16 @@ async function refreshToken(): Promise<boolean> {
     }
   }
 
+  const refreshTokenValue = getRefreshToken();
+  if (!refreshTokenValue) {
+    return false;
+  }
+
   refreshPromise = fetch(`${API_URL}/auth/refresh`, {
     method: "POST",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${refreshTokenValue}`,
     },
   });
 
@@ -26,8 +32,17 @@ async function refreshToken(): Promise<boolean> {
     if (!response.ok) {
       throw new Error("Token refresh failed");
     }
-    return true;
+    const data = await response.json();
+    if (data.access_token) {
+      const currentRefreshToken = getRefreshToken();
+      if (currentRefreshToken) {
+        setTokens(data.access_token, currentRefreshToken);
+      }
+      return true;
+    }
+    return false;
   } catch {
+    clearTokens();
     return false;
   } finally {
     refreshPromise = null;
@@ -40,17 +55,21 @@ export async function fetchWithAuth(
 ): Promise<Response> {
   const fullUrl = url.startsWith("http") ? url : `${API_URL}${url}`;
 
+  const authHeader = getAuthHeader();
   const isFormData = options.body instanceof FormData;
-  const headers = isFormData
+  const headers: HeadersInit = isFormData
     ? { ...options.headers }
     : {
         "Content-Type": "application/json",
         ...options.headers,
       };
 
+  if (authHeader && !url.includes("/auth/login") && !url.includes("/auth/register")) {
+    headers["Authorization"] = authHeader;
+  }
+
   let response = await fetch(fullUrl, {
     ...options,
-    credentials: "include",
     headers,
   });
 
@@ -62,11 +81,19 @@ export async function fetchWithAuth(
   ) {
     const refreshed = await refreshToken();
     if (refreshed) {
+      const newAuthHeader = getAuthHeader();
+      if (newAuthHeader) {
+        headers["Authorization"] = newAuthHeader;
+      }
       response = await fetch(fullUrl, {
         ...options,
-        credentials: "include",
         headers,
       });
+    } else {
+      clearTokens();
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
     }
   }
 
