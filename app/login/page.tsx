@@ -35,7 +35,12 @@ export default function LoginPage() {
         throw new Error(data.detail || "Login failed");
       }
 
-      await new Promise(resolve => setTimeout(resolve, 300));
+      const data = await response.json();
+      if (!data.ok) {
+        throw new Error(data.detail || "Login failed");
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       window.location.href = "/";
     } catch (err) {
