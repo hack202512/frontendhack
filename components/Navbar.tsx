@@ -105,11 +105,11 @@ export default function Navbar() {
 
               <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 min-w-0">
                 <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
-                  <span className="hidden sm:inline text-xs sm:text-sm md:text-base lg:text-lg font-bold text-gray-800 whitespace-nowrap">
+                  <span className="hidden lg:inline text-base xl:text-lg font-bold text-gray-800 whitespace-nowrap">
                     Rejestr Rzeczy Znalezionych
                   </span>
-                  <div className="h-4 sm:h-5 md:h-6 w-px bg-red-600 hidden sm:block"></div>
-                  <span className="text-[10px] sm:text-xs md:text-sm text-gray-700 hidden md:inline whitespace-nowrap">
+                  <div className="h-6 w-px bg-red-600 hidden lg:block"></div>
+                  <span className="text-[10px] sm:text-xs md:text-[10px] text-gray-700 hidden md:inline lg:hidden whitespace-nowrap">
                     Serwis do zgłaszania rzeczy znalezionych
                   </span>
                 </div>
@@ -117,11 +117,14 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 lg:gap-4 flex-shrink-0">
+              <span className="hidden lg:inline text-sm xl:text-base font-medium text-gray-700 whitespace-nowrap">
+                Starostwo Bydgoskie
+              </span>
               {user && (
                 <div className="flex items-center gap-1.5 sm:gap-2">
                   <div className="hidden md:flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 border border-blue-600 rounded-md">
                     <svg
-                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600"
+                      className="w-3.5 h-3.5 sm:w-4 md:w-3.5 lg:w-4 text-blue-600"
                       fill="none"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -131,7 +134,7 @@ export default function Navbar() {
                     >
                       <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
-                    <span className="text-xs sm:text-sm font-medium text-blue-600 whitespace-nowrap">
+                    <span className="text-xs sm:text-sm md:text-xs lg:text-sm font-medium text-blue-600 whitespace-nowrap">
                       {user.first_name} {user.last_name}
                     </span>
                   </div>
@@ -143,7 +146,7 @@ export default function Navbar() {
 
               <button
                 onClick={() => router.push("/items")}
-                className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-[#0052a5] hover:text-[#003d7a] border border-[#0052a5] rounded-md hover:bg-blue-50 transition-colors whitespace-nowrap"
+                className="px-2 sm:px-3 md:px-2 lg:px-3 py-1.5 sm:py-2 text-xs sm:text-sm md:text-xs lg:text-sm font-medium text-[#0052a5] hover:text-[#003d7a] border border-[#0052a5] rounded-md hover:bg-blue-50 transition-colors whitespace-nowrap"
               >
                 <span className="hidden sm:inline">Zgubione przedmioty</span>
                 <span className="sm:hidden">Przedmioty</span>
@@ -163,7 +166,7 @@ export default function Navbar() {
               <button
                 onClick={handleLogout}
                 disabled={loading}
-                className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-red-600 hover:text-red-700 border border-red-600 rounded-md hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                className="px-2 sm:px-3 md:px-2 lg:px-3 py-1.5 sm:py-2 text-xs sm:text-sm md:text-xs lg:text-sm font-medium text-red-600 hover:text-red-700 border border-red-600 rounded-md hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
               >
                 {loading ? "..." : "Wyloguj"}
               </button>
