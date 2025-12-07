@@ -55,14 +55,12 @@ export default function Home() {
       return { valid: false, error: "Godzina musi być w formacie HH:MM (np. 14:30)" };
     }
 
-    // Jeśli podano datę i jest to dzisiaj, sprawdź czy godzina nie jest większa niż aktualna
     if (dateString) {
       const selectedDate = new Date(dateString);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       selectedDate.setHours(0, 0, 0, 0);
       
-      // Jeśli wybrano dzisiejszą datę
       if (selectedDate.getTime() === today.getTime()) {
         const [hours, minutes] = time.split(':').map(Number);
         const selectedTime = new Date();
@@ -80,18 +78,17 @@ export default function Home() {
   };
 
   const validateDate = (dateString: string): boolean => {
-    if (!dateString) return true; // Puste jest OK, bo required i tak to sprawdzi
+    if (!dateString) return true;
     const selectedDate = new Date(dateString);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Ustawiamy na początek dnia
+    today.setHours(0, 0, 0, 0);
     selectedDate.setHours(0, 0, 0, 0);
-    return selectedDate >= today;
+    return selectedDate <= today;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
-    // Aktualizuj formData najpierw, żeby mieć dostęp do aktualnej wartości daty przy walidacji czasu
     const updatedFormData = {
       ...formData,
       [name]: value,
@@ -110,12 +107,11 @@ export default function Home() {
       if (value === "") {
         setDateError("");
       } else if (!validateDate(value)) {
-        setDateError("Data nie może być wcześniejsza niż dzisiejsza");
+        setDateError("Data nie może być w przyszłości");
       } else {
         setDateError("");
       }
       
-      // Jeśli zmieniono datę, zwaliduj ponownie godzinę
       if (formData.foundTime) {
         const validation = validateTime(formData.foundTime, value);
         setTimeError(validation.error);
@@ -137,7 +133,7 @@ export default function Home() {
     }
     
     if (formData.foundDate && !validateDate(formData.foundDate)) {
-      setDateError("Data nie może być wcześniejsza niż dzisiejsza");
+      setDateError("Data nie może być w przyszłości");
       return;
     }
     
@@ -146,7 +142,6 @@ export default function Home() {
     setDateError("");
     
     try {
-      // Jeśli wybrano "opis okoliczności", to circumstances idzie do found_location
       const foundLocation = locationType === "vague" 
         ? formData.circumstances.trim() || null
         : formData.location.trim() || null;
@@ -158,7 +153,7 @@ export default function Home() {
         found_location: foundLocation,
         found_date: formData.foundDate,
         found_time: formData.foundTime.trim() || null,
-        circumstances: null, // circumstances nie jest używane w tym formularzu
+        circumstances: null,
         found_by_firstname: formData.finderFirstName.trim() || null,
         found_by_lastname: formData.finderLastName.trim() || null,
         found_by_phonenumber: formData.finderPhone.trim() || null,
