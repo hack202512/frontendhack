@@ -92,7 +92,11 @@ export default function Navbar() {
                 </svg>
               </button>
 
-              <div className="flex-shrink-0">
+              <button
+                onClick={() => router.push("/")}
+                className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                aria-label="Przejdź do strony głównej"
+              >
                 <Image
                   src="/godlo-12.svg"
                   alt="Godło Polski"
@@ -101,7 +105,7 @@ export default function Navbar() {
                   className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12"
                   priority
                 />
-              </div>
+              </button>
 
               <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 min-w-0">
                 <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">

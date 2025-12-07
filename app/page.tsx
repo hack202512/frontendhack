@@ -44,54 +44,121 @@ export default function Home() {
   const [submitting, setSubmitting] = useState(false);
   const [locationType, setLocationType] = useState<"exact" | "map" | "vague" | null>(null);
   const [timeError, setTimeError] = useState("");
+  const [dateError, setDateError] = useState("");
   const [mapCoordinates, setMapCoordinates] = useState<{ lng: number; lat: number } | null>(null);
   
   const { address, loadingAddress, setAddress } = useAddressGeocoding(mapCoordinates);
 
-  const validateTime = (time: string): boolean => {
+  const validateTime = (time: string, dateString?: string): { valid: boolean; error: string } => {
     const timeRegex = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
-    return timeRegex.test(time);
+    if (!timeRegex.test(time)) {
+      return { valid: false, error: "Godzina musi być w formacie HH:MM (np. 14:30)" };
+    }
+
+    // Jeśli podano datę i jest to dzisiaj, sprawdź czy godzina nie jest większa niż aktualna
+    if (dateString) {
+      const selectedDate = new Date(dateString);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      selectedDate.setHours(0, 0, 0, 0);
+      
+      // Jeśli wybrano dzisiejszą datę
+      if (selectedDate.getTime() === today.getTime()) {
+        const [hours, minutes] = time.split(':').map(Number);
+        const selectedTime = new Date();
+        selectedTime.setHours(hours, minutes, 0, 0);
+        
+        const now = new Date();
+        
+        if (selectedTime > now) {
+          return { valid: false, error: "Godzina nie może być większa niż aktualna" };
+        }
+      }
+    }
+
+    return { valid: true, error: "" };
+  };
+
+  const validateDate = (dateString: string): boolean => {
+    if (!dateString) return true; // Puste jest OK, bo required i tak to sprawdzi
+    const selectedDate = new Date(dateString);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Ustawiamy na początek dnia
+    selectedDate.setHours(0, 0, 0, 0);
+    return selectedDate >= today;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
+    // Aktualizuj formData najpierw, żeby mieć dostęp do aktualnej wartości daty przy walidacji czasu
+    const updatedFormData = {
+      ...formData,
+      [name]: value,
+    };
+    
     if (name === "foundTime") {
       if (value === "") {
         setTimeError("");
-      } else if (!validateTime(value)) {
-        setTimeError("Godzina musi być w formacie HH:MM (np. 14:30)");
       } else {
-        setTimeError("");
+        const validation = validateTime(value, updatedFormData.foundDate);
+        setTimeError(validation.error);
       }
     }
     
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (name === "foundDate") {
+      if (value === "") {
+        setDateError("");
+      } else if (!validateDate(value)) {
+        setDateError("Data nie może być wcześniejsza niż dzisiejsza");
+      } else {
+        setDateError("");
+      }
+      
+      // Jeśli zmieniono datę, zwaliduj ponownie godzinę
+      if (formData.foundTime) {
+        const validation = validateTime(formData.foundTime, value);
+        setTimeError(validation.error);
+      }
+    }
+    
+    setFormData(updatedFormData);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (formData.foundTime && !validateTime(formData.foundTime)) {
-      setTimeError("Godzina musi być w formacie HH:MM (np. 14:30)");
+    if (formData.foundTime) {
+      const timeValidation = validateTime(formData.foundTime, formData.foundDate);
+      if (!timeValidation.valid) {
+        setTimeError(timeValidation.error);
+        return;
+      }
+    }
+    
+    if (formData.foundDate && !validateDate(formData.foundDate)) {
+      setDateError("Data nie może być wcześniejsza niż dzisiejsza");
       return;
     }
     
     setSubmitting(true);
     setTimeError("");
+    setDateError("");
     
     try {
+      // Jeśli wybrano "opis okoliczności", to circumstances idzie do found_location
+      const foundLocation = locationType === "vague" 
+        ? formData.circumstances.trim() || null
+        : formData.location.trim() || null;
+      
       const payload = {
         item_name: formData.itemName,
         item_color: formData.itemColor.trim() || null,
         item_brand: formData.itemBrand.trim() || null,
-        found_location: formData.location,
+        found_location: foundLocation,
         found_date: formData.foundDate,
         found_time: formData.foundTime.trim() || null,
-        circumstances: formData.circumstances.trim() || null,
+        circumstances: null, // circumstances nie jest używane w tym formularzu
         found_by_firstname: formData.finderFirstName.trim() || null,
         found_by_lastname: formData.finderLastName.trim() || null,
         found_by_phonenumber: formData.finderPhone.trim() || null,
@@ -196,6 +263,7 @@ export default function Home() {
                 foundTime: formData.foundTime,
               }}
               timeError={timeError}
+              dateError={dateError}
               onChange={handleChange}
             />
 

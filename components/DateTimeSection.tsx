@@ -6,10 +6,11 @@ interface DateTimeSectionProps {
     foundTime: string;
   };
   timeError: string;
+  dateError: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function DateTimeSection({ formData, timeError, onChange }: DateTimeSectionProps) {
+export default function DateTimeSection({ formData, timeError, dateError, onChange }: DateTimeSectionProps) {
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold text-black border-b border-gray-300 pb-2">
@@ -27,8 +28,14 @@ export default function DateTimeSection({ formData, timeError, onChange }: DateT
             value={formData.foundDate}
             onChange={onChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-black bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            max={new Date().toISOString().split('T')[0]}
+            className={`w-full px-3 py-2 border rounded-md text-black bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+              dateError ? "border-red-500" : "border-gray-300"
+            }`}
           />
+          {dateError && (
+            <p className="mt-1 text-sm text-red-600">{dateError}</p>
+          )}
         </div>
         <div>
           <label htmlFor="foundTime" className="block text-sm font-medium text-black mb-1">
